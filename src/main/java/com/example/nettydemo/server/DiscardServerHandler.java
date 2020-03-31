@@ -1,7 +1,9 @@
 package com.example.nettydemo.server;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * description:
@@ -11,11 +13,21 @@ import io.netty.channel.ChannelHandlerContext;
 public class DiscardServerHandler extends ChannelHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        super.exceptionCaught(ctx, cause);
+        cause.printStackTrace();
+        ctx.close();
+//        super.exceptionCaught(ctx, cause);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        super.channelRead(ctx, msg);
+        try {
+//        super.channelRead(ctx, msg);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            ReferenceCountUtil.release(msg);
+        }
     }
 }
