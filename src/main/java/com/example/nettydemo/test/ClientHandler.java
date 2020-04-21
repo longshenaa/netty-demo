@@ -13,7 +13,15 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ((ByteBuf)msg).release();
+        try {
+//            ByteBuf byteBuf = (ByteBuf)msg;
+//            byte[] bytes = new byte[byteBuf.readableBytes()];
+//            byteBuf.readBytes(bytes);
+//            String request = new String(bytes, "UTF-8");
+            System.out.println("client message:" + msg);
+        } finally {
+
+        }
 
     }
 }
