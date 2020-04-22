@@ -14,6 +14,8 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.FixedLengthFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 public class Server {
     public static void main(String[] args) throws InterruptedException {
@@ -25,6 +27,7 @@ public class Server {
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(boss, work)
             .channel(NioServerSocketChannel.class)
+            .handler(new LoggingHandler(LogLevel.DEBUG))
             .childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel s) throws Exception {
