@@ -11,6 +11,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.FixedLengthFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
@@ -27,9 +28,12 @@ public class Server {
             .childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel s) throws Exception {
-                    ByteBuf byteBuf = Unpooled.copiedBuffer("$_".getBytes());
-                    s.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, byteBuf));
-                    s.pipeline().addLast(new StringDecoder());
+//                    ByteBuf byteBuf = Unpooled.copiedBuffer("$_".getBytes());
+//                    s.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, byteBuf));
+//                    s.pipeline().addLast(new FixedLengthFrameDecoder(7));
+                    s.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
+                    s.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
+//                    s.pipeline().addLast(new StringDecoder());
                     s.pipeline().addLast(new ServerHandler());
                 }
             })

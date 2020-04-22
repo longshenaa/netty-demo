@@ -7,6 +7,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.io.File;
+
 public class ServerHandler extends ChannelHandlerAdapter {
 
     @Override
@@ -18,9 +20,13 @@ public class ServerHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            String msgStr = (String) msg;
-            System.out.println("服务端接收：" + msgStr);
-            String response = "我是响应数据$_";
+            Request req = (Request) msg;
+            if (req != null) {
+                System.out.println("server端接收到：id=" + req.getId() + ";message=" + req.getMessage());
+            }
+//            String msgStr = (String) msg;
+//            System.out.println("服务端接收：" + msgStr);
+//            String response = "我是响应数据$_";
 //            ctx.writeAndFlush(response);
 //            ByteBuf byteBuf = (ByteBuf)msg;
 //            byte[] bytes = new byte[byteBuf.readableBytes()];
@@ -28,7 +34,10 @@ public class ServerHandler extends ChannelHandlerAdapter {
 //            String request = new String(bytes, "UTF-8");
 //            System.out.println("server message:" + request);
 //
-            ChannelFuture f = ctx.writeAndFlush(Unpooled.copiedBuffer(response.getBytes()));
+            Response response = new Response();
+            response.setId(req.getId());
+            response.setMessage("接收到消息了。");
+            ChannelFuture f = ctx.writeAndFlush(response);
 //            //自动断开连接
 //            f.addListener(ChannelFutureListener.CLOSE);
         }

@@ -3,6 +3,7 @@ package com.example.nettydemo.test;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.ReferenceCountUtil;
 
 public class ClientHandler extends ChannelHandlerAdapter {
     @Override
@@ -18,9 +19,10 @@ public class ClientHandler extends ChannelHandlerAdapter {
 //            byte[] bytes = new byte[byteBuf.readableBytes()];
 //            byteBuf.readBytes(bytes);
 //            String request = new String(bytes, "UTF-8");
-            System.out.println("client message:" + msg);
+            Response res = (Response) msg;
+            System.out.println("客户端接收到信息：id = " + res.getId() + ";message = " + res.getMessage());
         } finally {
-
+            ReferenceCountUtil.release(msg);
         }
 
     }
