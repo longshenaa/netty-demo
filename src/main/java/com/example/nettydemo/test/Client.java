@@ -14,6 +14,9 @@ import io.netty.handler.codec.FixedLengthFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+
+import java.util.concurrent.TimeUnit;
 
 public class Client {
     private static class SingletonHolder {
@@ -39,6 +42,7 @@ public class Client {
 //                        ch.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, byteBuf));
                         ch.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
                         ch.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
+                        ch.pipeline().addLast(new ReadTimeoutHandler(5));
 //                        ch.pipeline().addLast(new StringDecoder());
                         ch.pipeline().addLast(new ClientHandler());
                     }
@@ -55,6 +59,12 @@ public class Client {
         }
     }
     public ChannelFuture getChannelFuture() {
+        if (this.cf == null) {
+            this.connect();
+        }
+        if (!this.cf.channel().isActive()) {
+            this.connect();
+        }
         return this.cf;
     }
     public static void main(String[] args) throws InterruptedException {
@@ -66,9 +76,23 @@ public class Client {
             request.setId(String.valueOf(i));
             request.setMessage("你好" + i);
             cf.channel().writeAndFlush(request);
+            TimeUnit.SECONDS.sleep(4);
         }
         cf.channel().closeFuture().sync();
-
+        System.out.println("连接断开");
+        new Thread(() -> {
+            ChannelFuture cf1 = c.getChannelFuture();
+            Request request = new Request();
+            request.setId(String.valueOf(10101));
+            request.setMessage("你好" + 10101);
+            cf1.channel().writeAndFlush(request);
+            try {
+                cf1.channel().closeFuture().sync();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
 //        EventLoopGroup work = new NioEventLoopGroup();
 //        Bootstrap bootstrap = new Bootstrap();
 //        bootstrap.group(work)

@@ -16,6 +16,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 
 public class Server {
     public static void main(String[] args) throws InterruptedException {
@@ -36,6 +37,7 @@ public class Server {
 //                    s.pipeline().addLast(new FixedLengthFrameDecoder(7));
                     s.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
                     s.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
+                    s.pipeline().addLast(new ReadTimeoutHandler(5));
 //                    s.pipeline().addLast(new StringDecoder());
                     s.pipeline().addLast(new ServerHandler());
                 }
