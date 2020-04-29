@@ -18,7 +18,6 @@ public class DiscardServerHandler extends ChannelHandlerAdapter {
 //        super.exceptionCaught(ctx, cause);
     }
 
-    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
             ByteBuf byteBuf = (ByteBuf)msg;

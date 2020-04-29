@@ -17,7 +17,6 @@ public class ServerHandler extends ChannelHandlerAdapter {
         ctx.close();
     }
 
-    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
             Request req = (Request) msg;

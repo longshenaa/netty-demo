@@ -12,7 +12,6 @@ public class ClientHandler extends ChannelHandlerAdapter {
         ctx.close();
     }
 
-    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
 //            ByteBuf byteBuf = (ByteBuf)msg;
